@@ -23,9 +23,14 @@ class MyApp extends StatelessWidget {
 }
 
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
   const Home({super.key});
 
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -68,7 +73,7 @@ class Home extends StatelessWidget {
           scrollDirection: Axis.vertical,
           children: [
             Padding(
-              padding: const EdgeInsets.all(20.0),
+              padding: const EdgeInsets.all(40.0),
               child: Column(
                 crossAxisAlignment : CrossAxisAlignment.start,
                 children: [
@@ -81,7 +86,13 @@ class Home extends StatelessWidget {
                 ],
               )
             ),
-            
+            Padding(
+              padding: const EdgeInsets.all(40.0),
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                
+              ),
+            )
           ],
         ),
       ),
