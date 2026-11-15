@@ -86,18 +86,24 @@ class _HomeState extends State<Home> {
                 ],
               )
             ),
-          //  ListView(
-          //       scrollDirection: Axis.horizontal,
-          //       children: [
-          //         Container(
-          //           width: 200,
-          //           height: 100,
-          //           decoration: BoxDecoration(
-          //             color: Colors.blue,
-          //           ),
-          //         )
-          //       ],
-          //     ),
+          SizedBox(
+            width: MediaQuery.of(context).size.width,
+            height: 100,
+            child: 
+             ListView(
+                scrollDirection: Axis.horizontal,
+                children: [
+                  Container(
+                    width: 200, height: 100,
+                    decoration: BoxDecoration(
+                      shape : BoxShape.rectangle,
+                      color: Colors.blue,
+                    ),
+                    child: SizedBox(width: 200, height: 100,),
+                  )
+                ],
+              ),
+          )
           ],
         ),
       ),
