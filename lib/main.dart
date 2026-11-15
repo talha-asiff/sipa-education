@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
+//import 'package:flutter/rendering.dart';
 
 void main() {
   runApp(const MyApp());
@@ -86,13 +86,18 @@ class _HomeState extends State<Home> {
                 ],
               )
             ),
-            Padding(
-              padding: const EdgeInsets.all(40.0),
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                
-              ),
-            )
+          //  ListView(
+          //       scrollDirection: Axis.horizontal,
+          //       children: [
+          //         Container(
+          //           width: 200,
+          //           height: 100,
+          //           decoration: BoxDecoration(
+          //             color: Colors.blue,
+          //           ),
+          //         )
+          //       ],
+          //     ),
           ],
         ),
       ),
