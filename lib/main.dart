@@ -1,0 +1,90 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'CIPA International',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF4146CF)),
+        useMaterial3: true,
+      ),
+      home: const Home(),
+    );
+  }
+}
+
+
+class Home extends StatelessWidget {
+  const Home({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        appBar: AppBar(
+          title: Row(children: [
+            Icon(Icons.school_outlined, color: Colors.blue, size: 40,),
+            Text(" CIPA International")
+          ],),
+          actions: [
+            
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text("Home"),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text("Courses"),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text("Catalog"),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text("Billing & Pricing"),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text("Profile"),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text("Settings"),
+            ),
+          ],
+        ),
+        body: ListView(
+          scrollDirection: Axis.vertical,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                crossAxisAlignment : CrossAxisAlignment.start,
+                children: [
+                  Text("Continue your", style: TextStyle(
+                color: Colors.black, fontSize: 40
+              ),),
+              Text("Ultimate Biology Course", style: TextStyle(
+                color: Colors.blue, fontSize: 60, fontWeight: FontWeight.bold
+              ),),
+                ],
+              )
+            ),
+            
+          ],
+        ),
+      ),
+    );
+  }
+}
