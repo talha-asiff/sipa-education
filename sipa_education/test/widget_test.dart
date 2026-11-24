@@ -1,92 +1,52 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:sipa_education/auth_gate.dart';
+import 'package:sipa_education/courses_page.dart';
+import 'package:sipa_education/login_page.dart';
 import 'package:sipa_education/logic.dart';
-import 'package:sipa_education/main.dart';
 
 void main() {
   setUp(() {
     registeredCourses.value = {};
-    currentUser.value = null;
   });
 
-  testWidgets('login gates the dashboard and registered courses appear there', (
+  testWidgets('login offers Google authentication only', (
     WidgetTester tester,
   ) async {
-    await tester.pumpWidget(const MyApp());
+    await tester.pumpWidget(const MaterialApp(home: LoginPage()));
 
-    expect(find.text('Welcome back'), findsOneWidget);
-    expect(find.text('Your learning'), findsNothing);
+    expect(find.text('Continue with Google'), findsOneWidget);
+    expect(find.byType(TextFormField), findsNothing);
+    expect(find.text('Create an account'), findsNothing);
+  });
 
-    await tester.enterText(
-      find.byKey(const ValueKey('login-email')),
-      'learner@example.com',
+  testWidgets('unauthenticated users cannot access protected content', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: AuthGate(
+          child: const Text('Protected dashboard'),
+          authStateChanges: Stream<User?>.value(null),
+        ),
+      ),
     );
-    await tester.enterText(
-      find.byKey(const ValueKey('login-password')),
-      'learning123',
-    );
-    await tester.tap(find.byKey(const ValueKey('login-submit')));
     await tester.pumpAndSettle();
 
-    expect(find.text('Your learning'), findsOneWidget);
-    expect(find.text('Your learning journey starts here'), findsOneWidget);
+    expect(find.text('Continue with Google'), findsOneWidget);
+    expect(find.text('Protected dashboard'), findsNothing);
+  });
 
-    await tester.tap(find.widgetWithText(TextButton, 'Courses'));
-    await tester.pumpAndSettle();
-
-    expect(find.text('Biology Crash Course'), findsOneWidget);
+  testWidgets('catalog registration updates the registered course map', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(const MaterialApp(home: CoursesPage()));
     await tester.tap(find.byKey(const ValueKey('register-course-biology')));
-    await tester.pumpAndSettle();
+    await tester.pump();
 
+    expect(registeredCourses.value.containsKey('biology'), isTrue);
     expect(find.text('Added'), findsOneWidget);
-
-    await tester.tap(find.widgetWithText(TextButton, 'Home'));
-    await tester.pumpAndSettle();
-
-    expect(find.text('Biology Crash Course'), findsOneWidget);
-    expect(find.text('Chemistry Crash Course'), findsNothing);
-
-    await tester.tap(find.widgetWithText(TextButton, 'Subscription'));
-    await tester.pumpAndSettle();
-    expect(find.text('SIPA Plus'), findsOneWidget);
-
-    await tester.tap(find.widgetWithText(TextButton, 'Account'));
-    await tester.pumpAndSettle();
-    expect(find.text('learner@example.com'), findsOneWidget);
-
-    await tester.tap(find.text('Sign out'));
-    await tester.pumpAndSettle();
-    expect(find.text('Welcome back'), findsOneWidget);
-  });
-
-  testWidgets('sign-up creates a demo session and opens the dashboard', (
-    WidgetTester tester,
-  ) async {
-    await tester.pumpWidget(const MyApp());
-    await tester.tap(find.byKey(const ValueKey('open-signup')));
-    await tester.pumpAndSettle();
-
-    await tester.enterText(
-      find.byKey(const ValueKey('signup-name')),
-      'Sipa Learner',
-    );
-    await tester.enterText(
-      find.byKey(const ValueKey('signup-email')),
-      'newlearner@example.com',
-    );
-    await tester.enterText(
-      find.byKey(const ValueKey('signup-password')),
-      'learning123',
-    );
-    await tester.enterText(
-      find.byKey(const ValueKey('signup-confirm-password')),
-      'learning123',
-    );
-    await tester.ensureVisible(find.byKey(const ValueKey('signup-submit')));
-    await tester.tap(find.byKey(const ValueKey('signup-submit')));
-    await tester.pumpAndSettle();
-
-    expect(find.text('Welcome back, Sipa Learner'), findsOneWidget);
   });
 }

@@ -4,14 +4,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'login_page.dart';
 
 class AuthGate extends StatelessWidget {
-  const AuthGate({super.key, required this.child});
+  const AuthGate({super.key, required this.child, this.authStateChanges});
 
   final Widget child;
+  final Stream<User?>? authStateChanges;
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<User?>(
-      stream: FirebaseAuth.instance.authStateChanges(),
+      stream: authStateChanges ?? FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return Scaffold(

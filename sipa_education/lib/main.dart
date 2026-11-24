@@ -1,15 +1,21 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 import 'account_page.dart';
 import 'app_shell.dart';
 import 'auth_gate.dart';
 import 'courses_page.dart';
+import 'firebase_options.dart';
 import 'login_page.dart';
 import 'logic.dart';
-import 'signup_page.dart';
 import 'subscription_page.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
 
@@ -66,9 +72,8 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
-        '/': (context) => const LoginPage(),
+        '/': (context) => AuthGate(child: const MyHomePage()),
         '/login': (context) => const LoginPage(),
-        '/signup': (context) => const SignupPage(),
         '/home': (context) => AuthGate(child: const MyHomePage()),
         '/courses': (context) => AuthGate(child: const CoursesPage()),
         '/subscription': (context) => AuthGate(child: const SubscriptionPage()),
@@ -276,6 +281,11 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget _buildWelcomeCard(BuildContext context) {
+    final displayName = FirebaseAuth.instance.currentUser?.displayName?.trim();
+    final firstName = displayName != null && displayName.isNotEmpty
+        ? displayName.split(' ').first
+        : 'learner';
+
     return Container(
       padding: const EdgeInsets.all(28),
       decoration: BoxDecoration(
@@ -289,27 +299,24 @@ class _MyHomePageState extends State<MyHomePage> {
       child: Row(
         children: [
           Expanded(
-            child: ValueListenableBuilder<DemoUser?>(
-              valueListenable: currentUser,
-              builder: (context, user, _) => Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Welcome back, ${user?.name ?? 'learner'}',
-                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w800,
-                    ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Welcome back, $firstName',
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w800,
                   ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Small steps today can lead to big things tomorrow.',
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: Colors.white.withValues(alpha: 0.88),
-                    ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Small steps today can lead to big things tomorrow.',
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    color: Colors.white.withValues(alpha: 0.88),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
           const SizedBox(width: 16),
