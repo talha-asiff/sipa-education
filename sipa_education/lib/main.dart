@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
+import 'account_page.dart';
+import 'app_navigation_actions.dart';
+import 'courses_page.dart';
 import 'logic.dart';
+import 'subscription_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,13 +16,21 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Sipa education',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
           seedColor: const Color.fromARGB(255, 243, 13, 116),
         ),
       ),
-      home: const MyHomePage(title: 'Sipa education | Dashboard'),
+      initialRoute: '/',
+      routes: {
+        '/': (context) =>
+            const MyHomePage(title: 'Sipa education | Dashboard'),
+        '/courses': (context) => const CoursesPage(),
+        '/subscription': (context) => const SubscriptionPage(),
+        '/account': (context) => const AccountPage(),
+      },
     );
   }
 }
@@ -65,6 +77,7 @@ class _MyHomePageState extends State<MyHomePage> {
           width: 100,
           height: 100,
         ),
+        actions: const [AppNavigationActions()],
       ),
       body: ListView(
         scrollDirection: Axis.vertical,
@@ -80,76 +93,108 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
           ),
-          SizedBox(
-            width: MediaQuery.of(context).size.width,
-            height: 250,
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                ListView.builder(
-                  controller: _courseScrollController,
-                  padding: const EdgeInsets.symmetric(horizontal: 56),
-                  scrollDirection: Axis.horizontal,
-                  itemCount: courseList.length,
-                  itemBuilder: (context, index) {
-                    final course = courseList.values.elementAt(index);
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        width: 500,
-                        height: 250,
-                        decoration: BoxDecoration(
-                          gradient: const LinearGradient(
-                            colors: [
-                              Color.fromARGB(255, 237, 200, 212),
-                              Color.fromARGB(255, 240, 197, 212),
-                            ],
-                          ),
-                          borderRadius: BorderRadius.circular(20),
+          ValueListenableBuilder<Map<String, Course>>(
+            valueListenable: registeredCourses,
+            builder: (context, courses, _) {
+              if (courses.isEmpty) {
+                return SizedBox(
+                  height: 250,
+                  child: Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Text('You have no registered courses yet.'),
+                        const SizedBox(height: 8),
+                        FilledButton(
+                          onPressed: () {
+                            Navigator.of(context).pushNamed('/courses');
+                          },
+                          child: const Text('Browse courses'),
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(20),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Icon(
-                                course.icon,
-                                color: const Color.fromARGB(255, 120, 1, 71),
-                                size: 50,
+                      ],
+                    ),
+                  ),
+                );
+              }
+
+              final registeredCourseList = courses.values.toList();
+              return SizedBox(
+                width: MediaQuery.of(context).size.width,
+                height: 250,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    ListView.builder(
+                      controller: _courseScrollController,
+                      padding: const EdgeInsets.symmetric(horizontal: 56),
+                      scrollDirection: Axis.horizontal,
+                      itemCount: registeredCourseList.length,
+                      itemBuilder: (context, index) {
+                        final course = registeredCourseList[index];
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Container(
+                            width: 500,
+                            height: 250,
+                            decoration: BoxDecoration(
+                              gradient: const LinearGradient(
+                                colors: [
+                                  Color.fromARGB(255, 237, 200, 212),
+                                  Color.fromARGB(255, 240, 197, 212),
+                                ],
                               ),
-                              Text(
-                                course.title,
-                                style: const TextStyle(
-                                  fontSize: 30,
-                                  color: Color.fromARGB(255, 120, 1, 71),
-                                ),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(20),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Icon(
+                                    course.icon,
+                                    color: const Color.fromARGB(
+                                      255,
+                                      120,
+                                      1,
+                                      71,
+                                    ),
+                                    size: 50,
+                                  ),
+                                  Text(
+                                    course.title,
+                                    style: const TextStyle(
+                                      fontSize: 30,
+                                      color: Color.fromARGB(255, 120, 1, 71),
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ],
+                            ),
                           ),
-                        ),
+                        );
+                      },
+                    ),
+                    Positioned(
+                      left: 8,
+                      child: IconButton.filled(
+                        tooltip: 'Scroll courses left',
+                        onPressed: () => _scrollCourses(-1),
+                        icon: const Icon(Icons.arrow_back),
                       ),
-                    );
-                  },
+                    ),
+                    Positioned(
+                      right: 8,
+                      child: IconButton.filled(
+                        tooltip: 'Scroll courses right',
+                        onPressed: () => _scrollCourses(1),
+                        icon: const Icon(Icons.arrow_forward),
+                      ),
+                    ),
+                  ],
                 ),
-                Positioned(
-                  left: 8,
-                  child: IconButton.filled(
-                    tooltip: 'Scroll courses left',
-                    onPressed: () => _scrollCourses(-1),
-                    icon: const Icon(Icons.arrow_back),
-                  ),
-                ),
-                Positioned(
-                  right: 8,
-                  child: IconButton.filled(
-                    tooltip: 'Scroll courses right',
-                    onPressed: () => _scrollCourses(1),
-                    icon: const Icon(Icons.arrow_forward),
-                  ),
-                ),
-              ],
-            ),
+              );
+            },
           ),
         ],
       ),
