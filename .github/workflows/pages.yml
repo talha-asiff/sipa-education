@@ -30,7 +30,7 @@ jobs:
       - name: Upload subfolder artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: "sipa_education/build/web/"
+          path: "sipa_education/build/web"
 
       - name: Prepare deployment
         id: deployment
