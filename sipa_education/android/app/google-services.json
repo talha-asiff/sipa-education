@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1010033111139",
+    "project_id": "sipa-education",
+    "storage_bucket": "sipa-education.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1010033111139:android:5b9920ad5029b7523b0856",
+        "android_client_info": {
+          "package_name": "com.example.sipa_education"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1010033111139-nvi72v29odfpvmj1l5jrk3cfrsi31a9t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBCQYnCjo1NGeRw5O7W0_0Y1K0IaWGk8qk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1010033111139-nvi72v29odfpvmj1l5jrk3cfrsi31a9t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
